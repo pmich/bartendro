@@ -1,9 +1,9 @@
-Documentation for Partyrobotics Dispenser
+Documentation for Bartendro Dispenser
 
 Functional overview
 ===================
 
-The PartRobotics Dispenser can dispense liquid with milli-liter accuracy and can be 
+The Bartendro Dispenser can dispense liquid with milliliter accuracy and can be 
 used in a standalone system or in combination with a router and other pumps to create a more
 complex liquid dispensing system.
 
@@ -20,7 +20,7 @@ The functions this dispenser can perform are:
 Hardware overview
 =================
 
-Bartendro utilize a start network topology using RS-232 (serial) communications.
+Bartendro utilizes a star network topology using RS-232 (serial) communications.
 A Bartendro drink bot usually contains a Raspberry Pi (RPI), a router board for communicating 
 with dispensers and up to 15 dispensers. Using the router, the RPI can select one dispenser at
 a time and communicate with it or communicate in broadcast mode to all of the dispensers at the 
@@ -34,7 +34,7 @@ communication with the dispenser.
 
 Each dispenser also contains 4 tri color LEDs connected to a WS2801 LED driver chip that handles
 the PWM functions to set the LEDs to a given color. All LEDs in one dispenser are connected
-to one WS2801 chipa and cannot be independetly addressed. Given that the RPI cannot communicate
+to one WS2801 chip and cannot be independetly addressed. Given that the RPI cannot communicate
 with all of the dispensers at exactly the same time, we've included a SYNC signal from the router
 to each of the dispensers. This SYNC signal is used to syncronize LED animation patterns
 stored in the dispensers. The dispenser changes the color of the LEDs based on the stored
@@ -51,7 +51,7 @@ To initiate communication, the user should send the question mark character '?' 
 The dispenser will respond with a one byte response that is its dispenser id. The dispenser 
 will continue to respond to '?' characters until it receives a 0xFF character, indicating that 
 the dispenser user has captured the dispenser id and communication can start. The user should 
-save the dispenser id as it will be required to address the dispense in subsequent communication.
+save the dispenser id as it will be required to address the dispenser in subsequent communication.
 
 Once the dispenser is ready for communication it will display its "idle" LED pattern which is a 
 rainbow color changing pattern. At this point the dispenser is ready to receive a packet
@@ -61,7 +61,7 @@ packet that was sent.
 
 Each packet contains a destination field, which is the dispenser id that was captured
 in the beginning of communication with the dispenser. While this may seem silly in a single
-dispenser setup, its important when more than one dispenser is used in conjunction with 
+dispenser setup, it's important when more than one dispenser is used in conjunction with 
 a router. All packets sent from the router are sent over one serial TX line to ALL dispensers
 connected to the router. All dispensers receive the packets and if the packet is not
 marked as a broadcast packet or marked with its dispenser id, the dispenser will ignore
@@ -82,7 +82,7 @@ Packets are comprised of two sections:
  * Header: 2 characters, always 0xFF 0xFF
  * Packet body, which is 7 bit data escaped, 10 bytes long
 
-This packet body ust be encoded into 7 bit data, so that the MSB of any data in the packet will
+This packet body must be encoded into 7 bit data, so that the MSB of any data in the packet will
 never be set. This allows the dispenser to clearly identify a packet header, which is the 
 only data to ever have the MSB set in an entire packet. For details on how to encode data
 to 7 bits, please see firmware/common/pack7.c[|h]. 
@@ -101,7 +101,7 @@ The data in the packet, when unpacked is 8 bytes long:
 Sending packets
 ===============
 
-Packets should be sent to the dispensers with a baud rate of 9600, no party and 1 stop bit.
+Packets should be sent to the dispensers with a baud rate of 9600, no parity and 1 stop bit.
 After sending 10 bytes, the user should wait until the dispenser sends a response. Most packet 
 types will get a single byte ACK code response and some will get a complete packet as a response.
 Packets that receive a full response are:
@@ -119,7 +119,7 @@ All other packet types will receive a simple ACK code, consisting of one of the 
  * 3 - PACKET_ACK_INVALID  -- the packed was improperly packed to 7 bits and did not yield 8
                               bytes of packet data.
  * 4 - PACKET_ACK_INVALID_HEADER -- an incomplete header (only one 0xFF character) was received
- * 5 - PACKET_ACK_HEADER_IN_PACKET -- An header character (0xFF) was received in a packet, 
+ * 5 - PACKET_ACK_HEADER_IN_PACKET -- header character (0xFF) was received in a packet, 
                                       which is invalid.
 
 For any packet that requires a complete response (any packet that returns data and not just an 
@@ -140,7 +140,7 @@ TODO: Dispense packets need to be broken into two 16 bit values: Speed and quant
 * PACKET_SET_MOTOR_SPEED -- Turn the motor on at a given speed. The max speed is 255, which 
   should be suitable for most applications. If you'd like the dispenser to turn more slowly, 
   you can give it a slower speed. Slower speeds can be useful for dispensing smaller quantities
-  of liquid or where more fine grained control is required. We recommend to not set the speed
+  of liquid where more fine grained control is required. We recommend to not set the speed
   below 64, since at that speed the motor can barely overcome the friction to turn the pump.
   To turn the pump off completely, set the speed to 0. Once this command is initiated, the 
   dispenser will immediately return an ACK and it will not wait for the dispense function to 
@@ -148,7 +148,7 @@ TODO: Dispense packets need to be broken into two 16 bit values: Speed and quant
 * PACKET_TICK_DISPENSE -- Dispense for a certain number of ticks. Pump rotation is measured in
   "ticks" which are generated by magnets moving over hall sensors in the dispenser. There
   are 4 hall sensors, so it takes 4 ticks for the pump to make one full turn. This function
-  is the most accurate way to dispense a liqiuid. We've determined that the pump dispenses
+  is the most accurate way to dispense liqiuid. We've determined that the pump dispenses
   1 milliliter in 2.78 ticks. Once this command is initiated, the dispenser will immediately
   return an ACK and it will not wait for the dispense function to complete. The number
   of ticks to dispense is an unsigned 32 bit payload.
@@ -230,7 +230,7 @@ data:
 To get a working dispenser, you will need at least to minimally write a dispenser id 
 into the first byte into eeprom RAM. This can be any value but 0 or 255. 
 
-Dispensers shipped from PartyRobotics have this dispenser id set. You can set another
+Dispensers shipped from Party Robotics have this dispenser id set. You can set another
 dispenser id (chosen randomly) by running the script in /firmware/dispenser/pump.sh
 
 Resetting the dispenser
@@ -247,7 +247,7 @@ The liquid level sensors that are available for our dispensers allow the dispens
 estimate the amount of liquid left in a bottle. The "liquid level" sensors are really
 differential pressure sensors that measure the difference between ambient air pressure
 and a liquid level hose that rests in the bottle. The liquid in the bottle exterts a tiny
-amount of pressure on the hose and there for on the sensor. As the liquid level in the
+amount of pressure on the hose and therefore on the sensor. As the liquid level in the
 bottle drops, the pressure approaches the ambient pressure. Once the pressure exterted
 on the hose is equal to ambient pressure, the bottle is empty. 
 
@@ -257,7 +257,7 @@ threshold should be set conservatively so that the dispenser will consider a bot
 be empty before it is acutally empty.
 
 These sensors are sensitive devices that require some calibration. Even at ambient 
-air pressure, not all sensors are going to return the value absolute value. Depending on
+air pressure, not all sensors are going to return the same absolute value. Depending on
 how you plan to use the pressure sensors we encourage you to read the pressure sensor
 readings at different liquid levels to get acquainted with how the sensor works.
 
@@ -268,7 +268,7 @@ Each dispenser also comes equipped with an "over current sense" circuit. This
 circuit estimates the amount of current that the motor in the dispenser consumes. If for
 some reason the motor binds up and consumes large amounts of current, the dispenser
 stops the motor and flashes the red LEDs quickly. At this point the dispenser refuses
-to engage the motor again until the dispense has been reset. 
+to engage the motor again until the dispenser has been reset. 
 
 Empirical testing has shown that the default value of 465 works well for the motor
 running at full speed. You can provide different current sense threshold values
