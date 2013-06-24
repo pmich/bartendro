@@ -1,9 +1,9 @@
-Documentation for Partyrobotics Dispenser
+Documentation for Bartendro Dispenser
 
 Functional overview
 ===================
 
-The PartRobotics Dispenser can dispense liquid with milli-liter accuracy and can be 
+The Bartendro Dispenser can dispense liquid with milliliter accuracy and can be 
 used in a standalone system or in combination with a router and other pumps to create a more
 complex liquid dispensing system.
 
@@ -20,7 +20,7 @@ The functions this dispenser can perform are:
 Hardware overview
 =================
 
-Bartendro utilize a start network topology using RS-232 (serial) communications.
+Bartendro utilize a star network topology using RS-232 (serial) communications.
 A Bartendro drink bot usually contains a Raspberry Pi (RPI), a router board for communicating 
 with dispensers and up to 15 dispensers. Using the router, the RPI can select one dispenser at
 a time and communicate with it or communicate in broadcast mode to all of the dispensers at the 
